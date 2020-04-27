@@ -5,7 +5,7 @@ DeepLUCIA is a deep learninb based model to predict chromatin loops from genomic
 TBA
 
 # Input data
-TBA
+input of DeepLUCIA is numpy matrix.
 
 # Training and evaluation
 TBA
