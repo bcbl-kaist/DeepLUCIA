@@ -11,7 +11,7 @@ def load_loop_label(sample_list,loop_label_txtgz_filename):
 	import pickle 
 
 	sample_list_hash = hashlib.md5(json.dumps(sample_list).encode("utf-8")).hexdigest()
-	multisample_loop_pickle_filename = Path("/tmp/" + sample_list_hash + ".loop.pickle")
+	multisample_loop_pickle_filename = Path(Path.cwd() / "InputMatrix" / (sample_list_hash + ".loop.pickle"))
 	if multisample_loop_pickle_filename.exists():
 		print(multisample_loop_pickle_filename)
 		with open(multisample_loop_pickle_filename,"rb") as multisample_loop_pickle_file:
@@ -62,9 +62,7 @@ def get_chrom_range(anchor_label_txtgz_filename,chrom_to_size):
 	return 	chrom_to_locus_index_range
 
 
-# def permute_same_distance(locus_index_pair,chrom_to_locus_index_range):
 def permute_same_distance(locus_index_pair,index_max):
-	#index_max = max(itertools.chain(*list(chrom_to_locus_index_range.values())))
 	loop_length = locus_index_pair[1]-locus_index_pair[0]
 	permuted_locus_index_one = random.randint(0,index_max-loop_length)
 	permuted_locus_index_two = permuted_locus_index_one + loop_length 
@@ -74,7 +72,7 @@ def permute_same_distance(locus_index_pair,index_max):
 
 def gen_neg_sample_locus_index_pair(pos_sample_locus_index_pair,sample_list,index_max):
 	pos_locus_index_pair = pos_sample_locus_index_pair[1]
-	while True: # for infinite generator. as it do not care yielded result fits condition or not, it should generate negative as many possible. ??.take(n) from pyfunctional will do their job
+	while True: 
 		neg_sample = random.choice(sample_list)
 		neg_locus_index_pair = permute_same_distance(pos_locus_index_pair,index_max)
 		neg_sample_locus_index_pair = (neg_sample,neg_locus_index_pair)

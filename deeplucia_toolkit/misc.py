@@ -17,8 +17,6 @@ def is_chrom_of(locus_index_pair,index_range):
 	return min(index_range) <= min(locus_index_pair) & max(locus_index_pair) <= max(index_range)
 
 
-#def is_in_desired_range_set(locus_index_pair,index_range_set):
-#	return any([ is_chrom_of(locus_index_pair,index_range) for index_range in index_range_set ])
 def is_in_desired_range_set(sample_locus_index_pair,index_range_set):
 	return any([ is_chrom_of(sample_locus_index_pair[1],index_range) for index_range in index_range_set ])
 	
@@ -36,8 +34,6 @@ def is_intra_chrom(sample_locus_index_pair,chrom_to_locus_index_range):
 
 def is_anchor_bearing(sample_locus_index_pair,anchor_locus_index_set):
 	return not(set(sample_locus_index_pair[1]) & anchor_locus_index_set)
-	# python assume any non-empty set as "true".
-	# do not need to count the elements in the intersection.
 
 
 def get_sample_index(sample_list):

@@ -42,6 +42,8 @@ def deeplucia_eval(keras_model_filename,config_json_filename):
 
 	from sklearn.metrics import precision_score
 	from sklearn.metrics import recall_score
+	from sklearn.metrics import f1_score
+	
 
 	from sklearn.metrics import average_precision_score
 	from sklearn.metrics import roc_auc_score
@@ -55,8 +57,8 @@ def deeplucia_eval(keras_model_filename,config_json_filename):
 		config = SimpleNamespace(**config_dict)
 
 	# obvious parameter setting 
-	local_path_base = "/content/" if os.path.exists("/content") else "/home/schloss/ver_20191030/"
-	chrominfo_filename = "/home/bcbl_commons/CDL/static/ChromInfo/ChromInfo_hg19.txt"
+	local_path_base = Path (Path.cwd() / "Features")
+	chrominfo_filename = local_path_base / "ChromInfo_hg19.txt"
 	chrom_set = set(["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10","chr11","chr12","chr13","chr14","chr15","chr16","chr17","chr18","chr19","chr20","chr21","chr22","chrX"])
 	
 	test_chrom_set = set(config.test_chrom_list)
@@ -154,38 +156,20 @@ def deeplucia_eval(keras_model_filename,config_json_filename):
 	label_pred = list(itertools.chain(*label_pred_list))
 	label_true = list(itertools.chain(*label_true_list))
 
-	tn, fp, fn, tp = confusion_matrix(label_true ,label_pred).ravel()
 
-	precison = precision_score(label_true ,label_pred)
-	recall = recall_score(label_true ,label_pred)
+	f1 = f1_score (label_true ,label_pred)
 	mcc = matthews_corrcoef(label_true ,label_pred)
-
-	#au_pr_curve = average_precision_score(label_true ,prob_pred)
 	au_ro_curve = roc_auc_score(label_true ,prob_pred)
+	au_pr_curve = average_precision_score(label_true ,prob_pred)
 
-	model_evaluation_filename = "eval_model/" + keras_model_filename.split("/")[-1][:-20] + "." + config.log_id + ".xls"
-	#model_evaluation_filename = "eval_model/" + keras_model_filename.split("/")[-1].split(".")[0] + "." + config.log_id + ".xls"
+	model_evaluation_filename = "eval_model/" + keras_model_filename.split("/")[-1] + "." + config.log_id + ".xls"
+
 	with open(model_evaluation_filename,"wt") as model_evaluation_file:
-		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tTP\t" + str(tp)+"\n")
-		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tFN\t" + str(fn)+"\n")
-		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tFP\t" + str(fp)+"\n")
-		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tTN\t" + str(tn)+"\n")
-		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tAUROC\t" + str(au_ro_curve)+"\n")
-		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tprecision\t" + str(precison)+"\n")
-		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\trecall\t" + str(recall)+"\n")
-		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tMCC\t" + str(mcc)+"\n")
 
-	"""
-	print ( ",".join(sample_list) + "\t
-	print ( ",".join(sample_list) + "\t
-	print ( ",".join(sample_list) + "\t
-	print ( ",".join(sample_list) + "\t
-	print ( ",".join(sample_list) + "\t
-	print ( ",".join(sample_list) + "\t
-	print ( ",".join(sample_list) + "\t
-	print ( ",".join(sample_list) + "\t
-	"""
-	
+		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tAUROC\t" + str(au_ro_curve)+"\n")
+		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tAUPRC\t" + str(au_pr_curve)+"\n")
+		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tMCC\t" + str(mcc)+"\n")
+		model_evaluation_file.write(keras_model_filename.split("/")[-1][:-20] + "\t" + config.log_id + "\tF1\t" + str(f1)+"\n")
 
 
 if __name__ == "__main__":

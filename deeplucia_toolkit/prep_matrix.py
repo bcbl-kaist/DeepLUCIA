@@ -30,22 +30,15 @@ def load_multisample_multimark_epi_array(sample_list,mark_list,sample_mark_to_ep
 
 	sample_list_hash = hashlib.md5(json.dumps(sample_list).encode("utf-8")).hexdigest()
 	mark_list_hash = hashlib.md5(json.dumps(mark_list).encode("utf-8")).hexdigest()
-	multisample_multimark_epi_array_filename = Path("/tmp/" + sample_list_hash + "." + mark_list_hash + ".npy")
+	multisample_multimark_epi_array_filename = Path(Path.cwd() / "InputMatrix" / (sample_list_hash + "." + mark_list_hash + ".npy"))
+	print(multisample_multimark_epi_array_filename)
 	if multisample_multimark_epi_array_filename.exists():
 		multisample_multimark_epi_array = numpy.load(multisample_multimark_epi_array_filename,mmap_mode="r")
 	else:
-		"""
-		sample and mark list is provied to "explicitly" assign their order!
-		"""
-
 		multimark_epi_array_list = []
 		sample_mark_to_epi_numpy_filename
 		for sample in sample_list:
 			mark_to_epi_numpy_filename = {sample_mark[1]:epi_numpy_filename for sample_mark,epi_numpy_filename in sample_mark_to_epi_numpy_filename.items() if sample_mark[0] == sample}
-			#mark_to_epi_numpy_filename = {}
-			#for mark in mark_list:
-			#	sample_mark = (sample,mark)
-			#	mark_to_epi_numpy_filename[mark] = sample_mark_to_epi_numpy_filename[sample_mark]
 			multimark_epi_array = load_multimark_epi_array(mark_list,mark_to_epi_numpy_filename,cap_crit)
 			multimark_epi_array_list.append(multimark_epi_array)
 		multisample_multimark_epi_array = numpy.stack(multimark_epi_array_list,axis=0)

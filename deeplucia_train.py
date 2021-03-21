@@ -53,8 +53,8 @@ def deeplucia_train(config_json_filename):
 		config = SimpleNamespace(**config_dict)
 
 	# obvious parameter setting 
-	local_path_base = "/content/" if os.path.exists("/content") else "/home/schloss/ver_20191030/"
-	chrominfo_filename = "/home/bcbl_commons/CDL/static/ChromInfo/ChromInfo_hg19.txt"
+	local_path_base = Path (Path.cwd() / "Features")
+	chrominfo_filename = local_path_base / "ChromInfo_hg19.txt"
 	chrom_set = set(["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10","chr11","chr12","chr13","chr14","chr15","chr16","chr17","chr18","chr19","chr20","chr21","chr22","chrX"])
 	
 	validate_chrom_set =  set(config.val_chrom_list)

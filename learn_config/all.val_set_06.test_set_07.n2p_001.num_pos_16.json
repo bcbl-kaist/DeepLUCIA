@@ -1,0 +1,1 @@
+{"sample_id_list": ["E017", "E116", "E117", "E119", "E122", "E123", "E127"], "val_chrom_list": ["chr6", "chr18"], "test_chrom_list": ["chr7", "chr17"], "n2p_ratio": 1, "num_pos": 16, "log_id": "all.val_set_06.test_set_07.n2p_001.num_pos_16"}

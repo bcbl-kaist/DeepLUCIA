@@ -31,7 +31,6 @@ def extract_seq_epi_dataset(sample_locus_index_pair_list,pos_sample_locus_index_
 	numpy.random.shuffle(sample_locus_index_pair_list)
 	label = list(map(lambda sample_locus_index_pair : 1 if sample_locus_index_pair in pos_sample_locus_index_pair_set else 0,sample_locus_index_pair_list))
 	label = numpy.asarray(label)
-	#label = keras.utils.to_categorical(label, 2) # for original
 
 	seq_feature_one,seq_feature_two = take_seq_array(total_seq_array,sample_locus_index_pair_list)
 	epi_feature_one,epi_feature_two = take_epi_array(total_multisample_multimark_epi_array,sample_locus_index_pair_list,sample_to_sample_index)
@@ -58,17 +57,14 @@ def extract_seq_epi_dataset_unlabeled(sample_locus_index_pair_list,total_seq_arr
 	return (seq_feature_one,seq_feature_two,epi_feature_one,epi_feature_two)
 
 
-
-
 def gen_sample_locus_index_pair_sublist(sample_locus_index_pair_list):
 	for _,chunk in itertools.groupby(enumerate(sample_locus_index_pair_list), lambda x: x[0]// 5 ):
 		yield [indexed_sample_locus_index_pair[1] for indexed_sample_locus_index_pair in chunk]
 
+
 def gen_seq_epi_subdataset(sample_locus_index_pair_sublist_gen,pos_sample_locus_index_pair_set,total_seq_array,total_multisample_multimark_epi_array,sample_to_sample_index):
 	for i,sample_locus_index_pair_sublist in enumerate(sample_locus_index_pair_sublist_gen):
-		#print(str(i) + " : " + str(sample_locus_index_pair_sublist))
 		feature,label = extract_seq_epi_dataset(sample_locus_index_pair_sublist,pos_sample_locus_index_pair_set,total_seq_array,total_multisample_multimark_epi_array,sample_to_sample_index)
-		print(len(feature))
 		yield feature
 
 
@@ -79,17 +75,3 @@ def extract_seq_epi_chunked_dataset(sample_locus_index_pair_list,pos_sample_locu
 	sample_locus_index_pair_sublist_gen = gen_sample_locus_index_pair_sublist(sample_locus_index_pair_list)
 	seq_epi_subdataset_gen = gen_seq_epi_subdataset(sample_locus_index_pair_sublist_gen,pos_sample_locus_index_pair_set,total_seq_array,total_multisample_multimark_epi_array,sample_to_sample_index)
 	return (seq_epi_subdataset_gen,label)
-
-
-"""
-def extract_seq_epi_dataset2(sample_locus_index_pair_list,pos_sample_locus_index_pair_set,total_seq_array,total_multisample_multimark_epi_array,sample_to_sample_index):
-	numpy.random.shuffle(sample_locus_index_pair_list)
-	label = list(map(lambda sample_locus_index_pair : 1 if sample_locus_index_pair in pos_sample_locus_index_pair_set else 0,sample_locus_index_pair_list))
-	label = numpy.asarray(label)
-	label = keras.utils.to_categorical(label, 2) # for original
-
-	seq_feature_one,seq_feature_two = take_seq_array(total_seq_array,sample_locus_index_pair_list)
-	epi_feature_one,epi_feature_two = take_epi_array(total_multisample_multimark_epi_array,sample_locus_index_pair_list,sample_to_sample_index)
-
-	return ((seq_feature_one,seq_feature_two,epi_feature_one,epi_feature_two),label)
-"""
